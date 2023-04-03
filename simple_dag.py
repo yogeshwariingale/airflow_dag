@@ -1,36 +1,15 @@
-from datetime import timedelta
+from datetime import datetime
 from airflow import DAG
-from airflow.operators.bash_operator \
-    import BashOperator
-from airflow.utils.dates import days_ago
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python_operator import PythonOperator
 
-dag = DAG(
-    'simple_dag',
-    description='A simple DAG',
-    schedule_interval=timedelta(days=1),
-    start_date = days_ago(1),
-)
+def print_hello():
+    return 'Hello world from first Airflow DAG!'
 
-t1 = BashOperator(
-    task_id='print_date',
-    bash_command='date',
-    dag=dag,
-)
+dag = DAG('hello_world', description='Hello World DAG',
+          schedule_interval='1 0 * * *',
+          start_date=datetime(2023, 3, 31), catchup=False)
 
-t2 = BashOperator(
-    task_id='sleep',
-    depends_on_past=True,
-    bash_command='sleep 3',
-    dag=dag,
-)
+hello_operator = PythonOperator(task_id='hello_task', python_callable=print_hello, dag=dag)
 
-t3 = BashOperator(
-    task_id='print_end',
-    start_date = days_ago(1),
-    depends_on_past=True,
-    bash_command='echo \'end\'',
-    dag=dag,
-)
-
-t1 >> t2
-t2 >> t3
+hello_operator
