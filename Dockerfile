@@ -1,5 +1,5 @@
 FROM apache/airflow:2.1.3
-RUN apt-get update && \
+RUN sudo apt-get update && \
     apt-get install -y openjdk-8-jdk && \
     apt-get install -y ant && \
     apt-get clean;
