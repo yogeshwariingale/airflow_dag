@@ -1,7 +1,13 @@
-FROM apache/airflow:2.1.3
-USER 1
-RUN chmod -R 777 /var
-RUN apt-get update && apt-get install -y openjdk-8-jdk
-    
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+FROM apache/airflow:2.0.2
+
+USER root
+
+# Install OpenJDK-11
+RUN apt update && \
+    apt-get install -y openjdk-11-jdk && \
+    apt-get install -y ant && \
+    apt-get clean;
+
+# Set JAVA_HOME
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64/
 RUN export JAVA_HOME
